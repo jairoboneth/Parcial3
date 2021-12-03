@@ -1,0 +1,659 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="AguacateModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Banco">
+          <Key>
+            <PropertyRef Name="NroCuenta" />
+          </Key>
+          <Property Name="NroCuenta" Type="bigint" Nullable="false" />
+          <Property Name="Saldo" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Cedula" Type="bigint" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Costo">
+          <Key>
+            <PropertyRef Name="CostoId" />
+          </Key>
+          <Property Name="CostoId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="HoraCostoInicio" Type="time" Precision="7" Nullable="false" />
+          <Property Name="HoraCostoFin" Type="time" Precision="7" Nullable="false" />
+          <Property Name="Valor" Type="bigint" Nullable="false" />
+        </EntityType>
+        <EntityType Name="DetalleMsg">
+          <Key>
+            <PropertyRef Name="DetId" />
+          </Key>
+          <Property Name="DetId" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Mensaje" Type="bigint" />
+          <Property Name="MensajeDescripcion" Type="nvarchar" MaxLength="500" />
+          <Property Name="CostoId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Mensaje">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="NroOrigen" Type="bigint" Nullable="false" />
+          <Property Name="NroDestino" Type="bigint" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Personas">
+          <Key>
+            <PropertyRef Name="Cedula" />
+          </Key>
+          <Property Name="Cedula" Type="bigint" Nullable="false" />
+          <Property Name="Nombre" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Apellido" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Direccion" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Correo" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Password" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="Rol" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Rol">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Nombre" Type="varchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="Telefono">
+          <Key>
+            <PropertyRef Name="Telefono" />
+          </Key>
+          <Property Name="Telefono" Type="bigint" Nullable="false" />
+          <Property Name="Cedula" Type="bigint" Nullable="false" />
+          <Property Name="Saldo" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Estado" Type="int" Nullable="false" />
+          <Property Name="Desvio" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Telefonodesvio">
+          <Key>
+            <PropertyRef Name="DesvioId" />
+          </Key>
+          <Property Name="DesvioId" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="DesvioInicial" Type="bigint" Nullable="false" />
+          <Property Name="DesvioFinal" Type="bigint" Nullable="false" />
+        </EntityType>
+        <EntityType Name="TelefonoE">
+          <Key>
+            <PropertyRef Name="EstId" />
+          </Key>
+          <Property Name="EstId" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Telefono" Type="bigint" Nullable="false" />
+          <Property Name="TiempoConectado" Type="datetime" Nullable="false" />
+          <Property Name="TiempoDesconectado" Type="datetime" Nullable="false" />
+          <Property Name="TotalMensajesEnviados" Type="bigint" Nullable="false" />
+          <Property Name="TotalMensajesRecibidos" Type="bigint" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_Banco_ToTable">
+          <End Role="Personas" Type="Self.Personas" Multiplicity="1" />
+          <End Role="Banco" Type="Self.Banco" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Personas">
+              <PropertyRef Name="Cedula" />
+            </Principal>
+            <Dependent Role="Banco">
+              <PropertyRef Name="Cedula" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_EstadisticaTelefono_Telefono">
+          <End Role="Telefono" Type="Self.Telefono" Multiplicity="1" />
+          <End Role="TelefonoE" Type="Self.TelefonoE" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Telefono">
+              <PropertyRef Name="Telefono" />
+            </Principal>
+            <Dependent Role="TelefonoE">
+              <PropertyRef Name="Telefono" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Mensaje_Telefono">
+          <End Role="Telefono" Type="Self.Telefono" Multiplicity="1" />
+          <End Role="Mensaje" Type="Self.Mensaje" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Telefono">
+              <PropertyRef Name="Telefono" />
+            </Principal>
+            <Dependent Role="Mensaje">
+              <PropertyRef Name="NroOrigen" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Mensaje_Telefono2">
+          <End Role="Telefono" Type="Self.Telefono" Multiplicity="1" />
+          <End Role="Mensaje" Type="Self.Mensaje" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Telefono">
+              <PropertyRef Name="Telefono" />
+            </Principal>
+            <Dependent Role="Mensaje">
+              <PropertyRef Name="NroDestino" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_MensajeDet_Costo">
+          <End Role="Costo" Type="Self.Costo" Multiplicity="1" />
+          <End Role="DetalleMsg" Type="Self.DetalleMsg" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Costo">
+              <PropertyRef Name="CostoId" />
+            </Principal>
+            <Dependent Role="DetalleMsg">
+              <PropertyRef Name="CostoId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_MensajeDet_ToTable">
+          <End Role="Mensaje" Type="Self.Mensaje" Multiplicity="0..1" />
+          <End Role="DetalleMsg" Type="Self.DetalleMsg" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Mensaje">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="DetalleMsg">
+              <PropertyRef Name="Mensaje" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Personas_ToTable">
+          <End Role="Rol" Type="Self.Rol" Multiplicity="1" />
+          <End Role="Personas" Type="Self.Personas" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Rol">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Personas">
+              <PropertyRef Name="Rol" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Telefono_ToTable">
+          <End Role="Personas" Type="Self.Personas" Multiplicity="1" />
+          <End Role="Telefono" Type="Self.Telefono" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Personas">
+              <PropertyRef Name="Cedula" />
+            </Principal>
+            <Dependent Role="Telefono">
+              <PropertyRef Name="Cedula" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Telefonodesvio_Telefono">
+          <End Role="Telefono" Type="Self.Telefono" Multiplicity="1" />
+          <End Role="Telefonodesvio" Type="Self.Telefonodesvio" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Telefono">
+              <PropertyRef Name="Telefono" />
+            </Principal>
+            <Dependent Role="Telefonodesvio">
+              <PropertyRef Name="DesvioInicial" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Telefonodesvio_Telefono2">
+          <End Role="Telefono" Type="Self.Telefono" Multiplicity="1" />
+          <End Role="Telefonodesvio" Type="Self.Telefonodesvio" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Telefono">
+              <PropertyRef Name="Telefono" />
+            </Principal>
+            <Dependent Role="Telefonodesvio">
+              <PropertyRef Name="DesvioFinal" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="AguacateModelStoreContainer">
+          <EntitySet Name="Banco" EntityType="Self.Banco" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Costo" EntityType="Self.Costo" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="DetalleMsg" EntityType="Self.DetalleMsg" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Mensaje" EntityType="Self.Mensaje" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Personas" EntityType="Self.Personas" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Rol" EntityType="Self.Rol" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Telefono" EntityType="Self.Telefono" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Telefonodesvio" EntityType="Self.Telefonodesvio" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TelefonoE" EntityType="Self.TelefonoE" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Banco_ToTable" Association="Self.FK_Banco_ToTable">
+            <End Role="Personas" EntitySet="Personas" />
+            <End Role="Banco" EntitySet="Banco" />
+          </AssociationSet>
+          <AssociationSet Name="FK_EstadisticaTelefono_Telefono" Association="Self.FK_EstadisticaTelefono_Telefono">
+            <End Role="Telefono" EntitySet="Telefono" />
+            <End Role="TelefonoE" EntitySet="TelefonoE" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Mensaje_Telefono" Association="Self.FK_Mensaje_Telefono">
+            <End Role="Telefono" EntitySet="Telefono" />
+            <End Role="Mensaje" EntitySet="Mensaje" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Mensaje_Telefono2" Association="Self.FK_Mensaje_Telefono2">
+            <End Role="Telefono" EntitySet="Telefono" />
+            <End Role="Mensaje" EntitySet="Mensaje" />
+          </AssociationSet>
+          <AssociationSet Name="FK_MensajeDet_Costo" Association="Self.FK_MensajeDet_Costo">
+            <End Role="Costo" EntitySet="Costo" />
+            <End Role="DetalleMsg" EntitySet="DetalleMsg" />
+          </AssociationSet>
+          <AssociationSet Name="FK_MensajeDet_ToTable" Association="Self.FK_MensajeDet_ToTable">
+            <End Role="Mensaje" EntitySet="Mensaje" />
+            <End Role="DetalleMsg" EntitySet="DetalleMsg" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Personas_ToTable" Association="Self.FK_Personas_ToTable">
+            <End Role="Rol" EntitySet="Rol" />
+            <End Role="Personas" EntitySet="Personas" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Telefono_ToTable" Association="Self.FK_Telefono_ToTable">
+            <End Role="Personas" EntitySet="Personas" />
+            <End Role="Telefono" EntitySet="Telefono" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Telefonodesvio_Telefono" Association="Self.FK_Telefonodesvio_Telefono">
+            <End Role="Telefono" EntitySet="Telefono" />
+            <End Role="Telefonodesvio" EntitySet="Telefonodesvio" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Telefonodesvio_Telefono2" Association="Self.FK_Telefonodesvio_Telefono2">
+            <End Role="Telefono" EntitySet="Telefono" />
+            <End Role="Telefonodesvio" EntitySet="Telefonodesvio" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="AguacateModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Banco">
+          <Key>
+            <PropertyRef Name="NroCuenta" />
+          </Key>
+          <Property Name="NroCuenta" Type="Int64" Nullable="false" />
+          <Property Name="Saldo" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Cedula" Type="Int64" Nullable="false" />
+          <NavigationProperty Name="Personas" Relationship="Self.FK_Banco_ToTable" FromRole="Banco" ToRole="Personas" />
+        </EntityType>
+        <EntityType Name="Costo">
+          <Key>
+            <PropertyRef Name="CostoId" />
+          </Key>
+          <Property Name="CostoId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="HoraCostoInicio" Type="Time" Nullable="false" Precision="7" />
+          <Property Name="HoraCostoFin" Type="Time" Nullable="false" Precision="7" />
+          <Property Name="Valor" Type="Int64" Nullable="false" />
+          <NavigationProperty Name="DetalleMsg" Relationship="Self.FK_MensajeDet_Costo" FromRole="Costo" ToRole="DetalleMsg" />
+        </EntityType>
+        <EntityType Name="DetalleMsg">
+          <Key>
+            <PropertyRef Name="DetId" />
+          </Key>
+          <Property Name="DetId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Mensaje" Type="Int64" />
+          <Property Name="MensajeDescripcion" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="CostoId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Costo" Relationship="Self.FK_MensajeDet_Costo" FromRole="DetalleMsg" ToRole="Costo" />
+          <NavigationProperty Name="Mensaje1" Relationship="Self.FK_MensajeDet_ToTable" FromRole="DetalleMsg" ToRole="Mensaje" />
+        </EntityType>
+        <EntityType Name="Mensaje">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="NroOrigen" Type="Int64" Nullable="false" />
+          <Property Name="NroDestino" Type="Int64" Nullable="false" />
+          <NavigationProperty Name="DetalleMsg" Relationship="Self.FK_MensajeDet_ToTable" FromRole="Mensaje" ToRole="DetalleMsg" />
+          <NavigationProperty Name="Telefono" Relationship="Self.FK_Mensaje_Telefono" FromRole="Mensaje" ToRole="Telefono" />
+          <NavigationProperty Name="Telefono1" Relationship="Self.FK_Mensaje_Telefono2" FromRole="Mensaje" ToRole="Telefono" />
+        </EntityType>
+        <EntityType Name="Personas">
+          <Key>
+            <PropertyRef Name="Cedula" />
+          </Key>
+          <Property Name="Cedula" Type="Int64" Nullable="false" />
+          <Property Name="Nombre" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Apellido" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Direccion" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Correo" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Password" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Rol" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Banco" Relationship="Self.FK_Banco_ToTable" FromRole="Personas" ToRole="Banco" />
+          <NavigationProperty Name="Rol1" Relationship="Self.FK_Personas_ToTable" FromRole="Personas" ToRole="Rol" />
+          <NavigationProperty Name="Telefono" Relationship="Self.FK_Telefono_ToTable" FromRole="Personas" ToRole="Telefono" />
+        </EntityType>
+        <EntityType Name="Rol">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Nombre" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Personas" Relationship="Self.FK_Personas_ToTable" FromRole="Rol" ToRole="Personas" />
+        </EntityType>
+        <EntityType Name="Telefono">
+          <Key>
+            <PropertyRef Name="Telefono1" />
+          </Key>
+          <Property Name="Telefono1" Type="Int64" Nullable="false" />
+          <Property Name="Cedula" Type="Int64" Nullable="false" />
+          <Property Name="Saldo" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Estado" Type="Int32" Nullable="false" />
+          <Property Name="Desvio" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Mensaje" Relationship="Self.FK_Mensaje_Telefono" FromRole="Telefono" ToRole="Mensaje" />
+          <NavigationProperty Name="Mensaje1" Relationship="Self.FK_Mensaje_Telefono2" FromRole="Telefono" ToRole="Mensaje" />
+          <NavigationProperty Name="Personas" Relationship="Self.FK_Telefono_ToTable" FromRole="Telefono" ToRole="Personas" />
+          <NavigationProperty Name="TelefonoE" Relationship="Self.FK_EstadisticaTelefono_Telefono" FromRole="Telefono" ToRole="TelefonoE" />
+          <NavigationProperty Name="Telefonodesvio" Relationship="Self.FK_Telefonodesvio_Telefono" FromRole="Telefono" ToRole="Telefonodesvio" />
+          <NavigationProperty Name="Telefonodesvio1" Relationship="Self.FK_Telefonodesvio_Telefono2" FromRole="Telefono" ToRole="Telefonodesvio" />
+        </EntityType>
+        <EntityType Name="Telefonodesvio">
+          <Key>
+            <PropertyRef Name="DesvioId" />
+          </Key>
+          <Property Name="DesvioId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="DesvioInicial" Type="Int64" Nullable="false" />
+          <Property Name="DesvioFinal" Type="Int64" Nullable="false" />
+          <NavigationProperty Name="Telefono" Relationship="Self.FK_Telefonodesvio_Telefono" FromRole="Telefonodesvio" ToRole="Telefono" />
+          <NavigationProperty Name="Telefono1" Relationship="Self.FK_Telefonodesvio_Telefono2" FromRole="Telefonodesvio" ToRole="Telefono" />
+        </EntityType>
+        <EntityType Name="TelefonoE">
+          <Key>
+            <PropertyRef Name="EstId" />
+          </Key>
+          <Property Name="EstId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Telefono" Type="Int64" Nullable="false" />
+          <Property Name="TiempoConectado" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="TiempoDesconectado" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="TotalMensajesEnviados" Type="Int64" Nullable="false" />
+          <Property Name="TotalMensajesRecibidos" Type="Int64" Nullable="false" />
+          <NavigationProperty Name="Telefono1" Relationship="Self.FK_EstadisticaTelefono_Telefono" FromRole="TelefonoE" ToRole="Telefono" />
+        </EntityType>
+        <Association Name="FK_Banco_ToTable">
+          <End Role="Personas" Type="Self.Personas" Multiplicity="1" />
+          <End Role="Banco" Type="Self.Banco" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Personas">
+              <PropertyRef Name="Cedula" />
+            </Principal>
+            <Dependent Role="Banco">
+              <PropertyRef Name="Cedula" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_MensajeDet_Costo">
+          <End Role="Costo" Type="Self.Costo" Multiplicity="1" />
+          <End Role="DetalleMsg" Type="Self.DetalleMsg" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Costo">
+              <PropertyRef Name="CostoId" />
+            </Principal>
+            <Dependent Role="DetalleMsg">
+              <PropertyRef Name="CostoId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_MensajeDet_ToTable">
+          <End Role="Mensaje" Type="Self.Mensaje" Multiplicity="0..1" />
+          <End Role="DetalleMsg" Type="Self.DetalleMsg" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Mensaje">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="DetalleMsg">
+              <PropertyRef Name="Mensaje" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Mensaje_Telefono">
+          <End Role="Telefono" Type="Self.Telefono" Multiplicity="1" />
+          <End Role="Mensaje" Type="Self.Mensaje" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Telefono">
+              <PropertyRef Name="Telefono1" />
+            </Principal>
+            <Dependent Role="Mensaje">
+              <PropertyRef Name="NroOrigen" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Mensaje_Telefono2">
+          <End Role="Telefono" Type="Self.Telefono" Multiplicity="1" />
+          <End Role="Mensaje" Type="Self.Mensaje" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Telefono">
+              <PropertyRef Name="Telefono1" />
+            </Principal>
+            <Dependent Role="Mensaje">
+              <PropertyRef Name="NroDestino" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Personas_ToTable">
+          <End Role="Rol" Type="Self.Rol" Multiplicity="1" />
+          <End Role="Personas" Type="Self.Personas" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Rol">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Personas">
+              <PropertyRef Name="Rol" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Telefono_ToTable">
+          <End Role="Personas" Type="Self.Personas" Multiplicity="1" />
+          <End Role="Telefono" Type="Self.Telefono" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Personas">
+              <PropertyRef Name="Cedula" />
+            </Principal>
+            <Dependent Role="Telefono">
+              <PropertyRef Name="Cedula" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_EstadisticaTelefono_Telefono">
+          <End Role="Telefono" Type="Self.Telefono" Multiplicity="1" />
+          <End Role="TelefonoE" Type="Self.TelefonoE" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Telefono">
+              <PropertyRef Name="Telefono1" />
+            </Principal>
+            <Dependent Role="TelefonoE">
+              <PropertyRef Name="Telefono" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Telefonodesvio_Telefono">
+          <End Role="Telefono" Type="Self.Telefono" Multiplicity="1" />
+          <End Role="Telefonodesvio" Type="Self.Telefonodesvio" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Telefono">
+              <PropertyRef Name="Telefono1" />
+            </Principal>
+            <Dependent Role="Telefonodesvio">
+              <PropertyRef Name="DesvioInicial" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Telefonodesvio_Telefono2">
+          <End Role="Telefono" Type="Self.Telefono" Multiplicity="1" />
+          <End Role="Telefonodesvio" Type="Self.Telefonodesvio" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Telefono">
+              <PropertyRef Name="Telefono1" />
+            </Principal>
+            <Dependent Role="Telefonodesvio">
+              <PropertyRef Name="DesvioFinal" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="AguacateEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Banco" EntityType="Self.Banco" />
+          <EntitySet Name="Costo" EntityType="Self.Costo" />
+          <EntitySet Name="DetalleMsg" EntityType="Self.DetalleMsg" />
+          <EntitySet Name="Mensaje" EntityType="Self.Mensaje" />
+          <EntitySet Name="Personas" EntityType="Self.Personas" />
+          <EntitySet Name="Rol" EntityType="Self.Rol" />
+          <EntitySet Name="Telefono" EntityType="Self.Telefono" />
+          <EntitySet Name="Telefonodesvio" EntityType="Self.Telefonodesvio" />
+          <EntitySet Name="TelefonoE" EntityType="Self.TelefonoE" />
+          <AssociationSet Name="FK_Banco_ToTable" Association="Self.FK_Banco_ToTable">
+            <End Role="Personas" EntitySet="Personas" />
+            <End Role="Banco" EntitySet="Banco" />
+          </AssociationSet>
+          <AssociationSet Name="FK_MensajeDet_Costo" Association="Self.FK_MensajeDet_Costo">
+            <End Role="Costo" EntitySet="Costo" />
+            <End Role="DetalleMsg" EntitySet="DetalleMsg" />
+          </AssociationSet>
+          <AssociationSet Name="FK_MensajeDet_ToTable" Association="Self.FK_MensajeDet_ToTable">
+            <End Role="Mensaje" EntitySet="Mensaje" />
+            <End Role="DetalleMsg" EntitySet="DetalleMsg" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Mensaje_Telefono" Association="Self.FK_Mensaje_Telefono">
+            <End Role="Telefono" EntitySet="Telefono" />
+            <End Role="Mensaje" EntitySet="Mensaje" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Mensaje_Telefono2" Association="Self.FK_Mensaje_Telefono2">
+            <End Role="Telefono" EntitySet="Telefono" />
+            <End Role="Mensaje" EntitySet="Mensaje" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Personas_ToTable" Association="Self.FK_Personas_ToTable">
+            <End Role="Rol" EntitySet="Rol" />
+            <End Role="Personas" EntitySet="Personas" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Telefono_ToTable" Association="Self.FK_Telefono_ToTable">
+            <End Role="Personas" EntitySet="Personas" />
+            <End Role="Telefono" EntitySet="Telefono" />
+          </AssociationSet>
+          <AssociationSet Name="FK_EstadisticaTelefono_Telefono" Association="Self.FK_EstadisticaTelefono_Telefono">
+            <End Role="Telefono" EntitySet="Telefono" />
+            <End Role="TelefonoE" EntitySet="TelefonoE" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Telefonodesvio_Telefono" Association="Self.FK_Telefonodesvio_Telefono">
+            <End Role="Telefono" EntitySet="Telefono" />
+            <End Role="Telefonodesvio" EntitySet="Telefonodesvio" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Telefonodesvio_Telefono2" Association="Self.FK_Telefonodesvio_Telefono2">
+            <End Role="Telefono" EntitySet="Telefono" />
+            <End Role="Telefonodesvio" EntitySet="Telefonodesvio" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="AguacateModelStoreContainer" CdmEntityContainer="AguacateEntities">
+          <EntitySetMapping Name="Banco">
+            <EntityTypeMapping TypeName="AguacateModel.Banco">
+              <MappingFragment StoreEntitySet="Banco">
+                <ScalarProperty Name="NroCuenta" ColumnName="NroCuenta" />
+                <ScalarProperty Name="Saldo" ColumnName="Saldo" />
+                <ScalarProperty Name="Cedula" ColumnName="Cedula" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Costo">
+            <EntityTypeMapping TypeName="AguacateModel.Costo">
+              <MappingFragment StoreEntitySet="Costo">
+                <ScalarProperty Name="CostoId" ColumnName="CostoId" />
+                <ScalarProperty Name="HoraCostoInicio" ColumnName="HoraCostoInicio" />
+                <ScalarProperty Name="HoraCostoFin" ColumnName="HoraCostoFin" />
+                <ScalarProperty Name="Valor" ColumnName="Valor" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DetalleMsg">
+            <EntityTypeMapping TypeName="AguacateModel.DetalleMsg">
+              <MappingFragment StoreEntitySet="DetalleMsg">
+                <ScalarProperty Name="DetId" ColumnName="DetId" />
+                <ScalarProperty Name="Mensaje" ColumnName="Mensaje" />
+                <ScalarProperty Name="MensajeDescripcion" ColumnName="MensajeDescripcion" />
+                <ScalarProperty Name="CostoId" ColumnName="CostoId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Mensaje">
+            <EntityTypeMapping TypeName="AguacateModel.Mensaje">
+              <MappingFragment StoreEntitySet="Mensaje">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="NroOrigen" ColumnName="NroOrigen" />
+                <ScalarProperty Name="NroDestino" ColumnName="NroDestino" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Personas">
+            <EntityTypeMapping TypeName="AguacateModel.Personas">
+              <MappingFragment StoreEntitySet="Personas">
+                <ScalarProperty Name="Cedula" ColumnName="Cedula" />
+                <ScalarProperty Name="Nombre" ColumnName="Nombre" />
+                <ScalarProperty Name="Apellido" ColumnName="Apellido" />
+                <ScalarProperty Name="Direccion" ColumnName="Direccion" />
+                <ScalarProperty Name="Correo" ColumnName="Correo" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="Rol" ColumnName="Rol" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Rol">
+            <EntityTypeMapping TypeName="AguacateModel.Rol">
+              <MappingFragment StoreEntitySet="Rol">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Nombre" ColumnName="Nombre" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Telefono">
+            <EntityTypeMapping TypeName="AguacateModel.Telefono">
+              <MappingFragment StoreEntitySet="Telefono">
+                <ScalarProperty Name="Telefono1" ColumnName="Telefono" />
+                <ScalarProperty Name="Cedula" ColumnName="Cedula" />
+                <ScalarProperty Name="Saldo" ColumnName="Saldo" />
+                <ScalarProperty Name="Estado" ColumnName="Estado" />
+                <ScalarProperty Name="Desvio" ColumnName="Desvio" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Telefonodesvio">
+            <EntityTypeMapping TypeName="AguacateModel.Telefonodesvio">
+              <MappingFragment StoreEntitySet="Telefonodesvio">
+                <ScalarProperty Name="DesvioId" ColumnName="DesvioId" />
+                <ScalarProperty Name="DesvioInicial" ColumnName="DesvioInicial" />
+                <ScalarProperty Name="DesvioFinal" ColumnName="DesvioFinal" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TelefonoE">
+            <EntityTypeMapping TypeName="AguacateModel.TelefonoE">
+              <MappingFragment StoreEntitySet="TelefonoE">
+                <ScalarProperty Name="EstId" ColumnName="EstId" />
+                <ScalarProperty Name="Telefono" ColumnName="Telefono" />
+                <ScalarProperty Name="TiempoConectado" ColumnName="TiempoConectado" />
+                <ScalarProperty Name="TiempoDesconectado" ColumnName="TiempoDesconectado" />
+                <ScalarProperty Name="TotalMensajesEnviados" ColumnName="TotalMensajesEnviados" />
+                <ScalarProperty Name="TotalMensajesRecibidos" ColumnName="TotalMensajesRecibidos" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="Ninguno" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
