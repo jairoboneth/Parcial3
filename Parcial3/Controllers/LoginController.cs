@@ -23,10 +23,15 @@ namespace Parcial3.Controllers
                     var User = (from persona in db.Personas
                                 where persona.Correo == correo && persona.Password == password.Trim()
                                 select persona).FirstOrDefault();
+
+                   
+
                     if (User != null)
                     {
-                        Session["User"] = User;
-                        return RedirectToAction("Index", "Personas");
+                        Session["Rol"] = User.Rol;
+                        Session["User"] = User.Cedula;
+                        Session["Us"] = User;
+                        return RedirectToAction("Index", "HomeAd");
 
                         
 

@@ -129,10 +129,13 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\DatosBController.cs" />
+    <Compile Include="Controllers\HomeAdController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\MensajeController.cs" />
     <Compile Include="Controllers\PersonasController.cs" />
+    <Compile Include="Controllers\TelefonoController.cs" />
+    <Compile Include="FiltroRol\Filtro.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -243,10 +246,20 @@
     <Content Include="Views\Personas\Edit.cshtml" />
     <Content Include="Views\Personas\Index.cshtml" />
     <Content Include="Views\Login\Login.cshtml" />
-    <Content Include="Views\DatosB\Index.cshtml" />
     <Content Include="Views\Mensaje\Index.cshtml" />
+    <Content Include="Views\Shared\_layoutAd.cshtml" />
+    <Content Include="Views\HomeAd\Index.cshtml" />
+    <Content Include="Views\Shared\_layoutUser.cshtml" />
+    <Content Include="Views\Telefono\Create.cshtml" />
+    <Content Include="Views\Telefono\Delete.cshtml" />
+    <Content Include="Views\Telefono\Details.cshtml" />
+    <Content Include="Views\Telefono\Edit.cshtml" />
+    <Content Include="Views\Telefono\Index.cshtml" />
+    <Content Include="Views\DatosB\Index.cshtml" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Controllers\NewFolder1\" />
+  </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

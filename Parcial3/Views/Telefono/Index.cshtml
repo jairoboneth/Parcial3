@@ -1,0 +1,52 @@
+﻿@model IEnumerable<Parcial3.Models.Telefono>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_layoutAd.cshtml";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Saldo)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Estado)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Desvio)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Personas.Nombre)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Saldo)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Estado)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Desvio)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Personas.Nombre)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.Telefono1 }) |
+            @Html.ActionLink("Details", "Details", new { id=item.Telefono1 }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.Telefono1 })
+        </td>
+    </tr>
+}
+
+</table>
